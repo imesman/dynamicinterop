@@ -37,3 +37,6 @@ public static class Kernel32
 }
 ```
 `GetCurrentThreadId` can then be called to execute the interoped function in Kernel32.
+
+### License
+DynamicInterop is distributed under the very permissive [MIT/X11 license](LICENSE).
