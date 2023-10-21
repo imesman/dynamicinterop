@@ -5,6 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>DynamicInterop</RootNamespace>
+        <Authors>Studio Imes</Authors>
+        <Description>A library for loading native libraries and retrieving function pointers as delegates.</Description>
+        <PackageProjectUrl>https://github.com/studioimes/dynamicinterop/</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/studioimes/dynamicinterop/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/studioimes/dynamicinterop/</RepositoryUrl>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     </PropertyGroup>
 
 
