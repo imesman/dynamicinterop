@@ -1,23 +1,48 @@
 //ReSharper disable all
-namespace DynamicInterop;
+using System.IO;
 using System.Runtime.InteropServices;
 
-public struct OSPath
+namespace DynamicInterop
 {
-    #region Public Properties
-    public OSPlatform Platform { get; set; }
-    
-    public Architecture Architecture { get; set; }
-    
-    public string Path { get; set; }
-    #endregion
-
-    #region Constructors
-    public OSPath(OSPlatform platform, Architecture architecture, string path)
+    /// <summary>
+    /// A file path targeting a specified platform and architecture.
+    /// </summary>
+    public struct OSPath
     {
-        Platform = platform;
-        Architecture = architecture;
-        Path = path;
+        #region Public Properties
+        /// <summary>
+        /// The target platform of the path.
+        /// </summary>
+        public OSPlatform Platform { get; set; }
+    
+        /// <summary>
+        /// The target architecture of the path.
+        /// </summary>
+        public Architecture Architecture { get; set; }
+    
+        /// <summary>
+        /// The path.
+        /// </summary>
+        public string Path { get; set; }
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Create an OSPath.
+        /// </summary>
+        /// <param name="platform">The target platform of the path.</param>
+        /// <param name="architecture">The target architecture of the path.</param>
+        /// <param name="path">The path.</param>
+        /// <exception cref="FileNotFoundException">Thrown if the provided file path doesn't exist.</exception>
+        public OSPath(OSPlatform platform, Architecture architecture, string path)
+        {
+            Platform = platform;
+            Architecture = architecture;
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException("The provided file path doesn't exist.");
+            Path = path;
+        }
+        #endregion
     }
-    #endregion
 }

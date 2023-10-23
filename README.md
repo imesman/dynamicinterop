@@ -4,6 +4,8 @@ A simple library for loading native libraries and retrieving function pointers a
 functionality would be for using a cross-platform library without having to rewrite DllImport's for each 
 platform or handle the library's path at compile-time.
 
+DynamicInterop supports .NET Standard 2.1 and .NET 7.
+
 ### Usage
 
 The preferred method for using DynamicInterop would be through a static class with  a constructor. Below is an 

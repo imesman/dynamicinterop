@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>DynamicInterop</RootNamespace>
@@ -12,6 +11,7 @@
         <RepositoryUrl>https://github.com/studioimes/dynamicinterop/</RepositoryUrl>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
 
 
