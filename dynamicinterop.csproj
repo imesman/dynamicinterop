@@ -12,6 +12,7 @@
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
+        <Version>1.1.0</Version>
     </PropertyGroup>
 
 
