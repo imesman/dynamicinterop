@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dynamicinterop", "dynamicinterop.csproj", "{24D91551-BE65-42BC-846F-C0777D43AD0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dynamicinterop", "src\dynamicinterop.csproj", "{24D91551-BE65-42BC-846F-C0777D43AD0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
