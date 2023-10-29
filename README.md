@@ -1,22 +1,16 @@
 ﻿# DynamicInterop
 
-A simple library for loading native libraries and retrieving function pointers as delegates. A use case for this 
-functionality would be for using a cross-platform library without having to rewrite DllImport's for each 
-platform or handle the library's path at compile-time.
+A simple library for loading native libraries and retrieving function pointers as delegates. This allows a 
+cross-platform library to be used without either having to rewrite DllImports for each platform or handle the 
+library's path at compile-time.
 
-DynamicInterop supports .NET Standard 2.1 and .NET 7.
+DynamicInterop supports .NET Standard 2.1 and .NET 7. All examples use .NET 7.
 
-### Usage
+### Examples
 
-The preferred method for using DynamicInterop would be through a static class with  a constructor. Below is an 
-example in which methods from Kernel32 are interoped:
+Below is an example of [loading a function from Kernel32](examples/Kernel32Example/Kernel32.cs):
 
 ```csharp
-namespace ExampleBindings;
-using System.Runtime.InteropServices;
-using DynamicInterop;
-using NativeLibrary = DynamicInterop.NativeLibrary;
-
 public static class Kernel32
 {
     public delegate int Kernel32_GetCurrentThreadId();
@@ -37,7 +31,7 @@ public static class Kernel32
     }
 }
 ```
-`GetCurrentThreadId` can then be called to execute the interoped function in Kernel32.
+The `GetCurrentThreadId` field can then be called to execute the associated function.
 
 ### License
 DynamicInterop is distributed under the very permissive [MIT/X11 license](LICENSE).
