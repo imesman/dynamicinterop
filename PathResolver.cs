@@ -37,9 +37,9 @@ namespace DynamicInterop
         public void Add(OSPath path)
         {
             if (path.Path == "" && path.Path == string.Empty)
-                throw new NullReferenceException("The provided path is empty!");
+                throw Internal.PathEmpty;
             if (!File.Exists(path.Path))
-                throw new FileNotFoundException("The provided file path doesn't exist!");
+                throw Internal.LibraryNotFound;
     
             for (int i = 0; i < Paths.Count; i++)
             {

@@ -1,5 +1,6 @@
 //ReSharper disable all
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace DynamicInterop
@@ -52,9 +53,10 @@ namespace DynamicInterop
         /// <exception cref="NotSupportedException">Thrown if the method isn't implemented.</exception>
         public virtual void Load(string name)
         {
-            throw new NotSupportedException();
+            if (!File.Exists(name))
+                throw Internal.LibraryNotFound;
         }
-        
+
         /// <summary>
         /// Retrieves a function pointer as a delegate.
         /// </summary>
@@ -64,7 +66,9 @@ namespace DynamicInterop
         /// <exception cref="NotSupportedException">Thrown if the method isn't implemented.</exception>
         public virtual T GetFunction<T>(string name) where T : Delegate
         {
-            throw new NotSupportedException();
+            if (Pointer == IntPtr.Zero)
+                throw Internal.LibraryNotLoaded;
+            return default!;
         }
 
         /// <summary>
@@ -73,7 +77,8 @@ namespace DynamicInterop
         /// <exception cref="NotSupportedException">Thrown if the method isn't implemented.</exception>
         public virtual void Free()
         {
-            throw new NotSupportedException();
+            if (Pointer == IntPtr.Zero)
+                return;
         }
         #endregion
 
@@ -94,6 +99,7 @@ namespace DynamicInterop
         /// <param name="name">The name of the library.</param>
         public override void Load(string name)
         {
+            base.Load(name);
             Pointer = Kernel32.LoadLibrary(name);
         }
 
@@ -105,8 +111,7 @@ namespace DynamicInterop
         /// <returns>A function pointer as a delegate.</returns>
         public override T GetFunction<T>(string name)
         {
-            if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException("A native library hasn't been loaded!");
+            base.GetFunction<T>(name);
             return Marshal.GetDelegateForFunctionPointer<T>(Kernel32.GetProcAddress(Pointer, name));
         }
 
@@ -115,8 +120,7 @@ namespace DynamicInterop
         /// </summary>
         public override void Free()
         {
-            if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException("A native library hasn't been loaded!");
+            base.Free();
             Kernel32.FreeLibrary(Pointer);
             Pointer = IntPtr.Zero;
         }
@@ -149,6 +153,7 @@ namespace DynamicInterop
         /// <param name="name">The name of the library.</param>
         public override void Load(string name)
         {
+            base.Load(name);
             Pointer = Libdl.dlopen(name, 2);
         }
         
@@ -160,8 +165,7 @@ namespace DynamicInterop
         /// <returns>A function pointer as a delegate.</returns>
         public override T GetFunction<T>(string name)
         {
-            if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException("A native library hasn't been loaded!");
+            base.GetFunction<T>(name);
             return Marshal.GetDelegateForFunctionPointer<T>(Libdl.dlsym(Pointer, name));
         }
         
@@ -170,8 +174,7 @@ namespace DynamicInterop
         /// </summary>
         public override void Free()
         {
-            if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException("A native library hasn't been loaded!");
+            base.Free();
             Libdl.dlclose(Pointer);
             Pointer = IntPtr.Zero;
         }
@@ -204,6 +207,7 @@ namespace DynamicInterop
         /// <param name="name">The name of the library.</param>
         public override void Load(string name)
         {
+            base.Load(name);
             Pointer = Libdl.dlopen(name, 2);
         }
 
@@ -215,8 +219,7 @@ namespace DynamicInterop
         /// <returns>A function pointer as a delegate.</returns>
         public override T GetFunction<T>(string name)
         {
-            if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException("A native library hasn't been loaded!");
+            base.GetFunction<T>(name);
             return Marshal.GetDelegateForFunctionPointer<T>(Libdl.dlsym(Pointer, name));
         }
 
@@ -225,8 +228,7 @@ namespace DynamicInterop
         /// </summary>
         public override void Free()
         {
-            if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException("A native library hasn't been loaded!");
+            base.Free();
             Libdl.dlclose(Pointer);
             Pointer = IntPtr.Zero;
         }
