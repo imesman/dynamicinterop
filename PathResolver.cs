@@ -1,5 +1,6 @@
 //ReSharper disable all
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -36,7 +37,9 @@ namespace DynamicInterop
         public void Add(OSPath path)
         {
             if (path.Path == "" && path.Path == string.Empty)
-                throw new NullReferenceException("The path is empty.");
+                throw new NullReferenceException("The provided path is empty!");
+            if (!File.Exists(path.Path))
+                throw new FileNotFoundException("The provided file path doesn't exist!");
     
             for (int i = 0; i < Paths.Count; i++)
             {

@@ -19,22 +19,21 @@ using NativeLibrary = DynamicInterop.NativeLibrary;
 
 public static class Kernel32
 {
-    public static PathResolver resolver;
-    public static NativeLibrary library;
-    
     public delegate int Kernel32_GetCurrentThreadId();
     public static Kernel32_GetCurrentThreadId GetCurrentThreadId;
     
     static Kernel32()
     {
-        resolver = new PathResolver();
-        resolver.Add(new OSPath(OSPlatform.Windows, Architecture.X86, "kernel32"));
-        resolver.Add(new OSPath(OSPlatform.Windows, Architecture.X64, "kernel32"));
-
-        library = NativeLibrary.Create();
-        library.Load(resolver.Get());
-
-        GetCurrentThreadId = library.GetFunction<Kernel32_GetCurrentThreadId>("GetCurrentThreadId");
+        using (NativeLibrary library = NativeLibrary.Create()) 
+        {
+            PathResolver resolver = new PathResolver();
+            resolver.Add(new OSPath(OSPlatform.Windows, Architecture.X86, "kernel32"));
+            resolver.Add(new OSPath(OSPlatform.Windows, Architecture.X64, "kernel32"));
+        
+            library.Load(resolver.Get());
+            
+            GetCurrentThreadId = library.GetFunction<Kernel32_GetCurrentThreadId>("GetCurrentThreadId");
+        }
     }
 }
 ```

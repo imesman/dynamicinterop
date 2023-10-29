@@ -7,7 +7,7 @@ namespace DynamicInterop
     /// <summary>
     /// A native library.
     /// </summary>
-    public class NativeLibrary
+    public class NativeLibrary : IDisposable
     {
         #region Public Properties
         /// <summary>
@@ -75,6 +75,10 @@ namespace DynamicInterop
         {
             throw new NotSupportedException();
         }
+        #endregion
+
+        #region Overrides
+        public void Dispose() => Free();
         #endregion
     }
 
@@ -226,7 +230,6 @@ namespace DynamicInterop
             Libdl.dlclose(Pointer);
             Pointer = IntPtr.Zero;
         }
-
         #endregion
         
         #region Private Classes

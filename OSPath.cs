@@ -40,7 +40,7 @@ namespace DynamicInterop
             Architecture = architecture;
 
             if (!File.Exists(path))
-                throw new FileNotFoundException("The provided file path doesn't exist.");
+                throw new FileNotFoundException("The provided file path doesn't exist!");
             Path = path;
         }
         #endregion
