@@ -2,6 +2,17 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dynamicinterop", "src\dynamicinterop.csproj", "{24D91551-BE65-42BC-846F-C0777D43AD0E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{0B937C28-6B86-44E1-A763-81BD23040AD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kernel32Example", "examples\Kernel32Example\Kernel32Example.csproj", "{CA0D6C61-753A-4BAF-9B08-33F9A9F49576}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0B68777-3FE9-4B30-A854-DDCEFB32798A}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +23,12 @@ Global
 		{24D91551-BE65-42BC-846F-C0777D43AD0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24D91551-BE65-42BC-846F-C0777D43AD0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24D91551-BE65-42BC-846F-C0777D43AD0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA0D6C61-753A-4BAF-9B08-33F9A9F49576}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA0D6C61-753A-4BAF-9B08-33F9A9F49576}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA0D6C61-753A-4BAF-9B08-33F9A9F49576}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA0D6C61-753A-4BAF-9B08-33F9A9F49576}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA0D6C61-753A-4BAF-9B08-33F9A9F49576} = {0B937C28-6B86-44E1-A763-81BD23040AD1}
 	EndGlobalSection
 EndGlobal
