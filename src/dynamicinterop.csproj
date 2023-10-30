@@ -11,10 +11,10 @@
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>1.0.0</Version>
-        <TargetFrameworks>netstandard2.1;net7.0</TargetFrameworks>
         <Company>Imesman</Company>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
+        <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
 
 

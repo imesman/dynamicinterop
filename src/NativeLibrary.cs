@@ -51,10 +51,11 @@ namespace DynamicInterop
         /// </summary>
         /// <param name="name">The name of the library.</param>
         /// <exception cref="NotSupportedException">Thrown if the method isn't implemented.</exception>
-        public virtual void Load(string name)
+        public virtual NativeLibrary Load(string name)
         {
             if (!File.Exists(name))
                 throw Internal.LibraryNotFound;
+            return this;
         }
 
         /// <summary>
@@ -97,10 +98,11 @@ namespace DynamicInterop
         /// Loads a native library.
         /// </summary>
         /// <param name="name">The name of the library.</param>
-        public override void Load(string name)
+        public override NativeLibrary Load(string name)
         {
             base.Load(name);
-            Pointer = Kernel32.LoadLibrary(name);
+            Pointer = Internal.Windows.LoadLibrary(name);
+            return this;
         }
 
         /// <summary>
@@ -112,7 +114,8 @@ namespace DynamicInterop
         public override T GetFunction<T>(string name)
         {
             base.GetFunction<T>(name);
-            return Marshal.GetDelegateForFunctionPointer<T>(Kernel32.GetProcAddress(Pointer, name));
+            return Marshal.GetDelegateForFunctionPointer<T>(Internal.Windows.GetProcAddress(
+                Pointer, name));
         }
 
         /// <summary>
@@ -121,22 +124,8 @@ namespace DynamicInterop
         public override void Free()
         {
             base.Free();
-            Kernel32.FreeLibrary(Pointer);
+            Internal.Windows.FreeLibrary(Pointer);
             Pointer = IntPtr.Zero;
-        }
-        #endregion
-
-        #region Private Classes
-        private static class Kernel32
-        {
-            [DllImport("kernel32")]
-            public static extern IntPtr LoadLibrary(string fileName);
-
-            [DllImport("kernel32")]
-            public static extern IntPtr GetProcAddress(IntPtr module, string procName);
-
-            [DllImport("kernel32")]
-            public static extern int FreeLibrary(IntPtr module);
         }
         #endregion
     }
@@ -151,10 +140,11 @@ namespace DynamicInterop
         /// Loads a native library.
         /// </summary>
         /// <param name="name">The name of the library.</param>
-        public override void Load(string name)
+        public override NativeLibrary Load(string name)
         {
             base.Load(name);
-            Pointer = Libdl.dlopen(name, 2);
+            Pointer = Internal.OSX.dlopen(name, 2);
+            return this;
         }
         
         /// <summary>
@@ -166,7 +156,7 @@ namespace DynamicInterop
         public override T GetFunction<T>(string name)
         {
             base.GetFunction<T>(name);
-            return Marshal.GetDelegateForFunctionPointer<T>(Libdl.dlsym(Pointer, name));
+            return Marshal.GetDelegateForFunctionPointer<T>(Internal.OSX.dlsym(Pointer, name));
         }
         
         /// <summary>
@@ -175,22 +165,8 @@ namespace DynamicInterop
         public override void Free()
         {
             base.Free();
-            Libdl.dlclose(Pointer);
+            Internal.OSX.dlclose(Pointer);
             Pointer = IntPtr.Zero;
-        }
-        #endregion
-
-        #region Private Classes
-        private static class Libdl
-        {
-            [DllImport("libdl.dylib")]
-            public static extern IntPtr dlopen(string fileName, int flags);
-
-            [DllImport("libdl.dylib")]
-            public static extern IntPtr dlsym(IntPtr handle, string name);
-
-            [DllImport("libdl.dylib")]
-            public static extern int dlclose(IntPtr handle);
         }
         #endregion
     }
@@ -205,10 +181,11 @@ namespace DynamicInterop
         /// Loads a native library.
         /// </summary>
         /// <param name="name">The name of the library.</param>
-        public override void Load(string name)
+        public override NativeLibrary Load(string name)
         {
             base.Load(name);
-            Pointer = Libdl.dlopen(name, 2);
+            Pointer = Internal.Linux.dlopen(name, 2);
+            return this;
         }
 
         /// <summary>
@@ -220,7 +197,7 @@ namespace DynamicInterop
         public override T GetFunction<T>(string name)
         {
             base.GetFunction<T>(name);
-            return Marshal.GetDelegateForFunctionPointer<T>(Libdl.dlsym(Pointer, name));
+            return Marshal.GetDelegateForFunctionPointer<T>(Internal.Linux.dlsym(Pointer, name));
         }
 
         /// <summary>
@@ -229,22 +206,8 @@ namespace DynamicInterop
         public override void Free()
         {
             base.Free();
-            Libdl.dlclose(Pointer);
+            Internal.Linux.dlclose(Pointer);
             Pointer = IntPtr.Zero;
-        }
-        #endregion
-        
-        #region Private Classes
-        private static class Libdl
-        {
-            [DllImport("libdl.so")]
-            public static extern IntPtr dlopen(string fileName, int flags);
-
-            [DllImport("libdl.so")]
-            public static extern IntPtr dlsym(IntPtr handle, string name);
-
-            [DllImport("libdl.so")]
-            public static extern int dlclose(IntPtr handle);
         }
         #endregion
     }
