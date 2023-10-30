@@ -1,6 +1,7 @@
 ﻿//ReSharper disable all
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace DynamicInterop
@@ -17,7 +18,7 @@ namespace DynamicInterop
         public static readonly NullReferenceException PathEmpty = new NullReferenceException(
             "The provided path is empty!");
         #endregion
-
+        
         #region Public Classes
         public static partial class Windows
         {

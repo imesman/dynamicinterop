@@ -30,18 +30,14 @@ namespace DynamicInterop
         /// <summary>
         /// Create an OSPath.
         /// </summary>
+        /// <param name="path">The path.</param>
         /// <param name="platform">The target platform of the path.</param>
         /// <param name="architecture">The target architecture of the path.</param>
-        /// <param name="path">The path.</param>
-        /// <exception cref="FileNotFoundException">Thrown if the provided file path doesn't exist.</exception>
-        public OSPath(OSPlatform platform, Architecture architecture, string path)
+        public OSPath(string path, OSPlatform platform, Architecture architecture)
         {
+            Path = path;
             Platform = platform;
             Architecture = architecture;
-
-            if (!File.Exists(path))
-                throw new FileNotFoundException("The provided file path doesn't exist!");
-            Path = path;
         }
         #endregion
     }
