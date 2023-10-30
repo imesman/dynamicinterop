@@ -33,7 +33,7 @@ The unmanaged library can then be loaded as such:
     library.Load(resolver.Get());
 ```
 
-### Using a function
+### Loading a function
 
 Once an unmanaged library has been successfully loaded, a function can be loaded using the `GetFunction<T>()` method. 
 However, first a delegate needs to be made that mirrors the unmanaged function you are attempting to load, 
