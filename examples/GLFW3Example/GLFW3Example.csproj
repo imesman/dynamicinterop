@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\dynamicinterop.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)runtimes\win-x64\glfw3.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>runtimes/win-x64</PackagePath>
+            <Pack>true</Pack>
+        </Content>
+    </ItemGroup>
+</Project>
