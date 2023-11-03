@@ -36,19 +36,20 @@ namespace DynamicInterop
         /// Add a path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <exception cref="NullReferenceException">Thrown if the path is empty.</exception>
-        public void Add(OSPath path)
+        /// <param name="shouldResolve">Should the path be resolved?</param>
+        public void Add(OSPath path, bool shouldResolve = true)
         {
-            OSPath newpath = Resolve(path);
+            if (shouldResolve)
+                path = Resolve(path);
     
             for (int i = 0; i < Paths.Count; i++)
             {
-                if (Paths[i].Platform == newpath.Platform &&
-                    Paths[i].Architecture == newpath.Architecture)
+                if (Paths[i].Platform == path.Platform &&
+                    Paths[i].Architecture == path.Architecture)
                     Paths.Remove(Paths[i]);
             }
     
-            Paths.Add(newpath);
+            Paths.Add(path);
         }
 
         /// <summary>
@@ -57,8 +58,29 @@ namespace DynamicInterop
         /// <param name="path">The path.</param>
         /// <param name="platform">The target platform of the path.</param>
         /// <param name="architecture">The target architecture of the path.</param>
-        public void Add(string path, OSPlatform platform, Architecture architecture) => Add(new OSPath(path, platform, 
-            architecture));
+        /// <param name="shouldResolve">Should the path be resolved?</param>
+        public void Add(string path, OSPlatform platform, Architecture architecture, bool shouldResolve = true) => 
+            Add(new OSPath(path, platform, architecture), shouldResolve);
+
+        /// <summary>
+        /// Add a path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="platform">The target platform of the path.</param>
+        /// <param name="shouldResolve">Should the path be resolved?</param>
+        public void Add(string path, OSPlatform platform, bool shouldResolve = true)
+        {
+            Architecture[] architectures = Internal.GetSupportedArchitectures();
+            for (int i = 0; i < architectures.Length; i++)
+            {
+                OSPath ospath = new OSPath(path, platform, architectures[i]);
+                if (shouldResolve)
+                    ospath = Resolve(ospath, false);
+                
+                if(ospath != OSPath.Empty)
+                    Add(ospath, false);
+            }
+        }
         
         /// <summary>
         /// Selects the optimal path based on its target platform and architecture.
@@ -82,12 +104,13 @@ namespace DynamicInterop
         /// Attempts to resolve a path that can't be immediately found.
         /// </summary>
         /// <param name="path">The path.</param>
+        /// <param name="shouldThrow">Should an exception be thrown upon failure, or should an empty path be returned?</param>
         /// <returns>The resolved path.</returns>
-        /// <exception cref="NullReferenceException">The provided path is empty!</exception>
-        /// <exception cref="FileNotFoundException">The provided library path doesn't exist!</exception>
-        private static OSPath Resolve(OSPath path)
+        /// <exception cref="NullReferenceException">"The provided path is empty!"</exception>
+        /// <exception cref="FileNotFoundException">"The provided library path doesn't exist!"</exception>
+        private static OSPath Resolve(OSPath path, bool shouldThrow = true)
         {
-            if (path.Path == "" || path.Path == string.Empty)
+            if (path.Path == "" || path.Path == string.Empty || path == OSPath.Empty)
                 throw Internal.PathEmpty;
             if (!File.Exists(path.Path))
             {
@@ -145,9 +168,13 @@ namespace DynamicInterop
                         }
                     }
                 }
-                
+
                 if (newpath.Path == string.Empty)
-                    throw Internal.LibraryNotFound;
+                {
+                    if(shouldThrow)
+                        throw Internal.LibraryNotFound;
+                    else return OSPath.Empty;
+                }
                 else return newpath;
             }
 

@@ -14,7 +14,7 @@ public static class Glfw
     {
         NativeLibrary library = NativeLibrary.Create();
         PathResolver resolver = new PathResolver();
-        resolver.Add("runtimes/win-x64/glfw3.dll", OSPlatform.Windows, Architecture.X64);
+        resolver.Add("glfw3.dll", OSPlatform.Windows);
         
         library.Load(resolver.Get());
             
