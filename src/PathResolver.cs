@@ -75,7 +75,7 @@ namespace DynamicInterop
             {
                 OSPath ospath = new OSPath(path, platform, architectures[i]);
                 if (shouldResolve)
-                    ospath = Resolve(ospath, false);
+                    ospath = Resolve(ospath, false, false);
                 
                 if(ospath != OSPath.Empty)
                     Add(ospath, false);
@@ -105,10 +105,12 @@ namespace DynamicInterop
         /// </summary>
         /// <param name="path">The path.</param>
         /// <param name="shouldThrow">Should an exception be thrown upon failure, or should an empty path be returned?</param>
+        /// <param name="shouldBruteForce">Should the path be resolved by brute-forcing the executing directory if all
+        /// other attempts fail?</param>
         /// <returns>The resolved path.</returns>
         /// <exception cref="NullReferenceException">"The provided path is empty!"</exception>
         /// <exception cref="FileNotFoundException">"The provided library path doesn't exist!"</exception>
-        private static OSPath Resolve(OSPath path, bool shouldThrow = true)
+        private static OSPath Resolve(OSPath path, bool shouldThrow = true, bool shouldBruteForce = true)
         {
             if (path.Path == "" || path.Path == string.Empty || path == OSPath.Empty)
                 throw Internal.PathEmpty;
@@ -159,7 +161,7 @@ namespace DynamicInterop
                             if(deppath != string.Empty)
                                 newpath.Path = deppath;
 
-                            if (newpath.Path == string.Empty)
+                            if (newpath.Path == string.Empty && shouldBruteForce)
                             {
                                 string brutepath = ResolveBruteForce(path);
                                 if(brutepath != string.Empty)
