@@ -14,7 +14,7 @@ public static class Kernel32
         using (NativeLibrary library = NativeLibrary.Create()) 
         {
             PathResolver resolver = new PathResolver();
-            resolver.Add("kernel32", OSPlatform.Windows, Architecture.X86);
+            resolver.Add("kernel32.dll", OSPlatform.Windows, Architecture.X86);
             resolver.Add("kernel32.dll", OSPlatform.Windows, Architecture.X64);
         
             library.Load(resolver.Get());
