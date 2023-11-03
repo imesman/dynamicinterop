@@ -1,7 +1,7 @@
 # Usage Guide
 
-To begin using DynamicInterop, either [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) 
-and build the project or install the [latest NuGet package](https://github.com/imesman/dynamicinterop/pkgs/nuget/dynamicinterop). 
+To begin using DynamicInterop, you will need to [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the [master](https://github.com/imesman/dynamicinterop/tree/master) branch 
+and build the main project. 
 The library is very simple to use, and anyone familiar with similar libraries like [nativelibraryloader](https://github.com/mellinoe/nativelibraryloader) 
 should have no trouble getting started.
 
