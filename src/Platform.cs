@@ -41,6 +41,14 @@ namespace DynamicInterop
         }
         #endregion
 
+        #region Public Methods
+        /// <summary>
+        /// Is this Platform the current Platform?
+        /// </summary>
+        /// <returns>Whether or not this Platform is the current Platform.</returns>
+        public bool Is() => this == Current;
+        #endregion
+        
         #region Static Methods
         /// <summary>
         /// Gets the current operating system.
