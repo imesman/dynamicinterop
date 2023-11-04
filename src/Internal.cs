@@ -95,6 +95,9 @@ namespace DynamicInterop
 
             [DllImport("libdl.dylib")]
             public static extern int dlclose(IntPtr handle);
+            
+            [DllImport("libdl.dylib")]
+            public static extern string dlerror();
             #endregion
         }
         
@@ -117,6 +120,9 @@ namespace DynamicInterop
 
             [DllImport("libdl.so")]
             public static extern int dlclose(IntPtr handle);
+            
+            [DllImport("libdl.so")]
+            public static extern string dlerror();
             #endregion
         }
         #endregion

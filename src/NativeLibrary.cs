@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.DependencyModel;
@@ -84,7 +85,7 @@ namespace DynamicInterop
         /// <param name="shouldBruteForce">Should the path be found using brute-force if all else fails?</param>
         /// <returns>Whether or not the path was added successfully.</returns>
         /// <exception cref="FileNotFoundException">The provided library path doesn't exist!</exception>
-        public bool AddPath(string path, Platform platform, bool shouldThrow = true, bool shouldBruteForce = true)
+        public bool AddPath(string path, Platform platform, bool shouldBruteForce = true, bool shouldThrow = true)
         {
             // Attempt to resolve the path if it can't be immediately found.
             if (!File.Exists(path))
@@ -337,6 +338,8 @@ namespace DynamicInterop
         {
             base.Load();
             Pointer = Internal.Windows.LoadLibrary(ActivePath);
+            if (Pointer == IntPtr.Zero)
+                throw new Win32Exception(Marshal.GetLastWin32Error(), Internal.LibraryNotLoaded.ToString());
             return this;
         }
 
@@ -379,6 +382,8 @@ namespace DynamicInterop
         {
             base.Load();
             Pointer = Internal.OSX.dlopen(ActivePath, 2);
+            if (Pointer == IntPtr.Zero)
+                throw new NullReferenceException(Internal.OSX.dlerror(), Internal.LibraryNotLoaded);
             return this;
         }
         
@@ -420,6 +425,8 @@ namespace DynamicInterop
         {
             base.Load();
             Pointer = Internal.Linux.dlopen(ActivePath, 2);
+            if (Pointer == IntPtr.Zero)
+                throw new NullReferenceException(Internal.Linux.dlerror(), Internal.LibraryNotLoaded);
             return this;
         }
 
