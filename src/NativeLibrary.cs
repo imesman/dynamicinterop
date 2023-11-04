@@ -85,7 +85,7 @@ namespace DynamicInterop
         /// <param name="shouldBruteForce">Should the path be found using brute-force if all else fails?</param>
         /// <returns>Whether or not the path was added successfully.</returns>
         /// <exception cref="FileNotFoundException">The provided library path doesn't exist!</exception>
-        public bool AddPath(string path, Platform platform, bool shouldBruteForce = true, bool shouldThrow = true)
+        public NativeLibrary AddPath(string path, Platform platform, bool shouldBruteForce = true, bool shouldThrow = true)
         {
             // Attempt to resolve the path if it can't be immediately found.
             if (!File.Exists(path))
@@ -233,11 +233,11 @@ namespace DynamicInterop
             {
                 if(shouldThrow)
                     throw Internal.LibraryNotFound;
-                return false;
+                return this;
             }
             else ResolvedPaths.Add(new OSPath(path, platform));
 
-            return true;
+            return this;
         }
         
         /// <summary>
@@ -245,22 +245,25 @@ namespace DynamicInterop
         /// </summary>
         /// <param name="path">The path to be added.</param>
         /// <param name="platform">The provided platform information.</param>
+        /// <param name="shouldThrow">Should an exception be thrown if a path cannot be found or resolved?</param>
         /// <returns>Whether or not the path was added successfully.</returns>
-        public bool AddPath(string path, OSPlatform platform)
+        public NativeLibrary AddPath(string path, OSPlatform platform, bool shouldThrow = true)
         {
             Architecture[] architectures = Internal.GetSupportedArchitectures();
             bool success = false;
             for (int i = 0; i < architectures.Length; i++)
             {
-                bool added = AddPath(path, new Platform(platform, architectures[i]), false, 
+                AddPath(path, new Platform(platform, architectures[i]), false, 
                     false); // Brute-forcing needs to be disabled so that binaries with the
                                         // same name that are built for differentbarchitectures don't get
                                         // intermixed.
-                if (added)
+                if (ResolvedPaths.Any())
                     success = true;
             }
 
-            return success;
+            if(shouldThrow && !success)
+                throw Internal.LibraryNotFound;
+            return this;
         }
         #endregion
         
