@@ -75,7 +75,7 @@ namespace DynamicInterop
         #endregion
 
         #region Public Methods
-        public void AddPath(string path, Platform platform, bool shouldBruteForce = true)
+        public bool AddPath(string path, Platform platform, bool shouldThrow = true, bool shouldBruteForce = true)
         {
             // Attempt to resolve the path if it can't be immediately found.
             if (!File.Exists(path))
@@ -219,20 +219,31 @@ namespace DynamicInterop
             resolved:
             // If it still can't be found after resolving, then an exception must be thrown.
             if (!File.Exists(path))
-                throw Internal.LibraryNotFound;
+            {
+                if(shouldThrow)
+                    throw Internal.LibraryNotFound;
+                return false;
+            }
             else ResolvedPaths.Add(new OSPath(path, platform));
+
+            return true;
         }
         
-        public void AddPath(string path, OSPlatform platform)
+        public bool AddPath(string path, OSPlatform platform)
         {
             Architecture[] architectures = Internal.GetSupportedArchitectures();
+            bool success = false;
             for (int i = 0; i < architectures.Length; i++)
             {
-                AddPath(path, new Platform(platform, architectures[i]), false); // Brute-forcing needs to
-                                                                                // be disabled so that binaries with the
-                                                                                // same name that are built for different
-                                                                                // architectures don't get intermixed.
+                bool added = AddPath(path, new Platform(platform, architectures[i]), false, 
+                    false); // Brute-forcing needs to be disabled so that binaries with the
+                                          // same name that are built for different
+                                          // architectures don't get intermixed.
+                if (added)
+                    success = true;
             }
+
+            return success;
         }
         #endregion
         
