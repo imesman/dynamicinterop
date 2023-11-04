@@ -12,8 +12,8 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Version>1.2.0</Version>
         <Company>Imesman</Company>
-        <AssemblyVersion>1.1.1</AssemblyVersion>
-        <FileVersion>1.1.1</FileVersion>
+        <AssemblyVersion>1.2.0</AssemblyVersion>
+        <FileVersion>1.2.0</FileVersion>
         <TargetFrameworks>net7.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
 
