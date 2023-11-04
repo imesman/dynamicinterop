@@ -25,17 +25,17 @@ namespace DynamicInterop
         public IntPtr Pointer { get; protected set; }
         
         /// <summary>
+        /// The resolved paths of the library.
+        /// </summary>
+        public List<OSPath> ResolvedPaths { get; protected set; }
+        
+        /// <summary>
         /// The active resolved path of the library.
         /// </summary>
         public string ActivePath
         {
             get { return ResolvedPaths[_activePath].Path; }
         }
-        
-        /// <summary>
-        /// The resolved paths of the library.
-        /// </summary>
-        public List<OSPath> ResolvedPaths { get; protected set; }
         #endregion
 
         #region Private Fields
@@ -62,7 +62,7 @@ namespace DynamicInterop
         /// Create a native library for the current platform.
         /// </summary>
         /// <returns>A NativeLibrary class.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the current platform is not supported.</exception>
+        /// <exception cref="NotSupportedException">The current operating system isn't supported!</exception>
         public static NativeLibrary Create()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -71,7 +71,7 @@ namespace DynamicInterop
                 return new OSXLibrary();
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 return new LinuxLibrary();
-            else throw new NotSupportedException(RuntimeInformation.OSDescription);
+            else throw Internal.PlatformNotSupported;
         }
         #endregion
 
@@ -97,6 +97,7 @@ namespace DynamicInterop
                 rids[0] = Platform.GetRID();
                 string full_rid_path = System.IO.Path.Combine(rids[0], path);
                 string full_rid_path_r = System.IO.Path.Combine("runtimes", full_rid_path);
+                
                 if (File.Exists(full_rid_path))
                 {
                     path = full_rid_path;
@@ -253,8 +254,8 @@ namespace DynamicInterop
             {
                 bool added = AddPath(path, new Platform(platform, architectures[i]), false, 
                     false); // Brute-forcing needs to be disabled so that binaries with the
-                                          // same name that are built for different
-                                          // architectures don't get intermixed.
+                                        // same name that are built for differentbarchitectures don't get
+                                        // intermixed.
                 if (added)
                     success = true;
             }
@@ -315,7 +316,7 @@ namespace DynamicInterop
                 return;
         }
         #endregion
-
+        
         #region Overrides
         /// <summary>
         /// Disposes of the library. Warning: if the library is disposed, all functions will stop working.
