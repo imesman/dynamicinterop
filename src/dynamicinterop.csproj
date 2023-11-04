@@ -10,7 +10,7 @@
         <RepositoryUrl>https://github.com/imesman/dynamicinterop/</RepositoryUrl>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.1.1</Version>
+        <Version>1.2.0</Version>
         <Company>Imesman</Company>
         <AssemblyVersion>1.1.1</AssemblyVersion>
         <FileVersion>1.1.1</FileVersion>

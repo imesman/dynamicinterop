@@ -1,7 +1,6 @@
 ﻿//ReSharper disable all
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace DynamicInterop
@@ -17,9 +16,16 @@ namespace DynamicInterop
         
         public static readonly NullReferenceException PathEmpty = new NullReferenceException(
             "The provided path is empty!");
+        
+        public static readonly PlatformNotSupportedException PlatformNotSupported = new PlatformNotSupportedException(
+            "The current operating system isn't supported!", new Exception(RuntimeInformation.OSDescription));
         #endregion
 
         #region Public Methods
+        /// <summary>
+        /// Gets the supported architectures of this operating system.
+        /// </summary>
+        /// <returns>The supported architectures of this operating system.</returns>
         public static Architecture[] GetSupportedArchitectures()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -30,9 +36,25 @@ namespace DynamicInterop
                 return Linux.SupportedArchitectures;
             else return new Architecture[] { };
         }
+        
+        /// <summary>
+        /// Retrieves the user directory.
+        /// </summary>
+        /// <returns>The user directory.</returns>
+        public static string GetUserDirectory()
+        {
+            string dir = string.Empty;
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                dir = Environment.GetEnvironmentVariable("USERPROFILE")!;
+            else
+                dir = Environment.GetEnvironmentVariable("HOME")!;
+
+            return dir != null ? dir : string.Empty;
+        }
         #endregion
         
-        #region Public Classes
+        #region Platform-specific Classes
         public static partial class Windows
         {
             #region Public Properties

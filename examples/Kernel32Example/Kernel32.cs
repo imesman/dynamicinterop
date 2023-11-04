@@ -11,14 +11,10 @@ public static class Kernel32
     
     static Kernel32()
     {
-        using (NativeLibrary library = NativeLibrary.Create()) 
-        {
-            PathResolver resolver = new PathResolver();
-            resolver.Add("kernel32.dll", OSPlatform.Windows);
-        
-            library.Load(resolver.Get());
+        NativeLibrary library = NativeLibrary.Create();
+        library.AddPath("kernel32.dll", OSPlatform.Windows);
+        library.Load();
             
-            GetCurrentThreadId = library.GetFunction<Kernel32_GetCurrentThreadId>("GetCurrentThreadId");
-        }
+        GetCurrentThreadId = library.GetFunction<Kernel32_GetCurrentThreadId>("GetCurrentThreadId");
     }
 }

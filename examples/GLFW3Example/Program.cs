@@ -13,10 +13,8 @@ public static class Glfw
     static Glfw()
     {
         NativeLibrary library = NativeLibrary.Create();
-        PathResolver resolver = new PathResolver();
-        resolver.Add("glfw3.dll", OSPlatform.Windows);
-        
-        library.Load(resolver.Get());
+        library.AddPath("glfw3.dll", OSPlatform.Windows);
+        library.Load();
             
         Init = library.GetFunction<glfwInit>("glfwInit");
     }
