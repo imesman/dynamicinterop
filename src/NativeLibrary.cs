@@ -75,6 +75,15 @@ namespace DynamicInterop
         #endregion
 
         #region Public Methods
+        /// <summary>
+        /// Adds a path that will be used to load the library depending on the platform information provided.
+        /// </summary>
+        /// <param name="path">The path to be added.</param>
+        /// <param name="platform">The provided platform information.</param>
+        /// <param name="shouldThrow">Should an exception be thrown if the path cannot be found or resolved?</param>
+        /// <param name="shouldBruteForce">Should the path be found using brute-force if all else fails?</param>
+        /// <returns>Whether or not the path was added successfully.</returns>
+        /// <exception cref="FileNotFoundException">The provided library path doesn't exist!</exception>
         public bool AddPath(string path, Platform platform, bool shouldThrow = true, bool shouldBruteForce = true)
         {
             // Attempt to resolve the path if it can't be immediately found.
@@ -229,6 +238,12 @@ namespace DynamicInterop
             return true;
         }
         
+        /// <summary>
+        /// Adds a path that will be used to load the library depending on the platform information provided.
+        /// </summary>
+        /// <param name="path">The path to be added.</param>
+        /// <param name="platform">The provided platform information.</param>
+        /// <returns>Whether or not the path was added successfully.</returns>
         public bool AddPath(string path, OSPlatform platform)
         {
             Architecture[] architectures = Internal.GetSupportedArchitectures();
@@ -290,7 +305,7 @@ namespace DynamicInterop
         }
 
         /// <summary>
-        /// Disposes of the native library.
+        /// Frees the native pointer of the library. Warning: if the native pointer is freed, all functions will stop working.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown if the method isn't implemented.</exception>
         public virtual void Free()
@@ -301,6 +316,9 @@ namespace DynamicInterop
         #endregion
 
         #region Overrides
+        /// <summary>
+        /// Disposes of the library. Warning: if the library is disposed, all functions will stop working.
+        /// </summary>
         public void Dispose() => Free();
         #endregion
     }
