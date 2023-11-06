@@ -77,6 +77,29 @@ namespace DynamicInterop
 
         #region Public Methods
         /// <summary>
+        /// Loads the native library.
+        /// </summary>
+        /// <param name="name">The name of the library.</param>
+        /// <param name="platform">The platform of the library.</param>
+        /// <returns>The native library.</returns>
+        /// <exception cref="NullReferenceException">"The provided path is empty!"</exception>
+        /// <exception cref="FileNotFoundException">"The provided library path doesn't exist!"</exception>
+        public NativeLibrary Load(string name, Platform platform)
+        {
+            AddPath(name, platform);
+            return Load();
+        }
+        
+        /// <summary>
+        /// Loads the native library.
+        /// </summary>
+        /// <param name="name">The name of the library.</param>
+        /// <returns>The native library.</returns>
+        /// <exception cref="NullReferenceException">"The provided path is empty!"</exception>
+        /// <exception cref="FileNotFoundException">"The provided library path doesn't exist!"</exception>
+        public NativeLibrary Load(string name) => Load(name, Platform.Current);
+        
+        /// <summary>
         /// Adds a path that will be used to load the library depending on the platform information provided.
         /// </summary>
         /// <param name="path">The path to be added.</param>
