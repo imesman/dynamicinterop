@@ -1,5 +1,7 @@
 //ReSharper disable all
 using System;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DynamicInterop
@@ -13,7 +15,12 @@ namespace DynamicInterop
         /// <summary>
         /// The current Platform.
         /// </summary>
-        public static Platform Current { get; } = new Platform(GetCurrentSystem(), RuntimeInformation.OSArchitecture);
+        public static Platform Current { get; internal set; }
+        
+        /// <summary>
+        /// The current operating system.
+        /// </summary>
+        public static OSPlatform OperatingSystem { get; internal set; }
         #endregion
         
         #region Public Properties
@@ -28,6 +35,14 @@ namespace DynamicInterop
         public Architecture Architecture { get; set; }
         #endregion
 
+        #region Static Constructors
+        static Platform()
+        {
+            OperatingSystem = GetCurrentSystem();
+            Current = new Platform(OperatingSystem, RuntimeInformation.OSArchitecture);
+        }
+        #endregion
+        
         #region Constructors
         /// <summary>
         /// Create a Platform.
@@ -57,9 +72,9 @@ namespace DynamicInterop
         /// <exception cref="PlatformNotSupportedException">The current operating system isn't supported!</exception>
         public static OSPlatform GetCurrentSystem()
         {
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return OSPlatform.Windows;
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 return OSPlatform.OSX;
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 return OSPlatform.Linux;
@@ -87,7 +102,7 @@ namespace DynamicInterop
         public static string GuessRID(Platform platform)
         {
             string rid = string.Empty;
-            if (platform.System == OSPlatform.Windows)
+            if (OperatingSystem == OSPlatform.Windows)
             {
                 switch (platform.Architecture)
                 {
@@ -105,7 +120,7 @@ namespace DynamicInterop
                         break;
                 }
             }
-            else if (platform.System == OSPlatform.OSX)
+            else if (OperatingSystem == OSPlatform.OSX)
             {
                 switch (platform.Architecture)
                 {
@@ -117,7 +132,7 @@ namespace DynamicInterop
                         break;
                 }
             }
-            else if (platform.System == OSPlatform.Linux)
+            else if (OperatingSystem == OSPlatform.Linux)
             {
                 switch (platform.Architecture)
                 {
@@ -137,6 +152,103 @@ namespace DynamicInterop
             }
 
             return rid;
+        }
+        
+        /// <summary>
+        /// Retrieves the user directory.
+        /// </summary>
+        /// <returns>The user directory.</returns>
+        public static string GetUserDirectory()
+        {
+            string dir = string.Empty;
+            
+            if (OperatingSystem == OSPlatform.Windows)
+                dir = Environment.GetEnvironmentVariable("USERPROFILE")!;
+            else
+                dir = Environment.GetEnvironmentVariable("HOME")!;
+
+            return dir != null ? dir : string.Empty;
+        }
+        
+        /// <summary>
+        /// Gets the supported architectures of this operating system.
+        /// </summary>
+        /// <returns>The supported architectures of this operating system.</returns>
+        public static Architecture[] GetSupportedArchitectures()
+        {
+            if (OperatingSystem == OSPlatform.Windows)
+                return Windows.SupportedArchitectures;
+            else if (OperatingSystem == OSPlatform.OSX)
+                return MacOSX.SupportedArchitectures;
+            else if (OperatingSystem == OSPlatform.Linux)
+                return Linux.SupportedArchitectures;
+            else return new Architecture[] { };
+        }
+
+        /// <summary>
+        /// Gets the full name of the CPU.
+        /// </summary>
+        /// <returns>The full name of the CPU.</returns>
+        /// <exception cref="PlatformNotSupportedException">The current operating system isn't supported!</exception>
+        public static string GetProcessorName()
+        {
+            if (OperatingSystem == OSPlatform.Windows)
+            {
+#pragma warning disable CA1416
+                return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                    @"HARDWARE\DESCRIPTION\System\CentralProcessor\0\")?.GetValue(
+                    "ProcessorNameString")?.ToString() ?? "Not Found";
+#pragma warning restore CA1416
+            }
+            else if (OperatingSystem == OSPlatform.OSX)
+                return MacOSX.Bash("sysctl -n machdep.cpu.brand_string").TrimEnd();
+            else if (OperatingSystem == OSPlatform.Linux)
+            {
+                const string cpufile = "/proc/cpuinfo";
+
+                string cpuline = File.ReadLines(cpufile).FirstOrDefault(l => l.StartsWith("model name",
+                    StringComparison.InvariantCultureIgnoreCase))!;
+                if (cpuline == null)
+                    return "UNKNOWN";
+
+                const string sep = ": ";
+                int startIdx = cpuline.IndexOf(sep, StringComparison.Ordinal) + sep.Length;
+                return cpuline.Substring(startIdx, cpuline.Length - startIdx);
+            }
+            else throw Internal.PlatformNotSupported;
+        }
+
+        /// <summary>
+        /// Get the system's installed memory in gigabytes.
+        /// </summary>
+        /// <returns>The system's installed memory in gigabytes.</returns>
+        /// <exception cref="PlatformNotSupportedException">The current operating system isn't supported!</exception>
+        public static long GetInstalledMemory()
+        {
+            if (OperatingSystem == OSPlatform.Windows)
+            {
+                Windows.GetPhysicallyInstalledSystemMemory(out long tmkb);
+                return (tmkb / 1024) / 1024;
+            }
+            else if (OperatingSystem == OSPlatform.OSX)
+                return long.Parse(MacOSX.Bash("sysctl -n hw.memsize")) / 1000_000_000;
+            else if (OperatingSystem == OSPlatform.Linux)
+            {
+                const string memoryfile = "/proc/meminfo";
+                string memoryline = File.ReadLines(memoryfile).FirstOrDefault(l => l.StartsWith("MemTotal:", 
+                    StringComparison.InvariantCultureIgnoreCase))!;
+
+                if (memoryline == null)
+                    return -1;
+
+                const string beginsep = ":";
+                const string endsep = "kB";
+                int startIdx = memoryline.IndexOf(beginsep, StringComparison.Ordinal) + beginsep.Length;
+                int endIdx = memoryline.IndexOf(endsep, StringComparison.Ordinal);
+                string memStr = memoryline.Substring(startIdx, endIdx - startIdx);
+                return long.Parse(memStr) / 1000_000;
+            }
+            else throw Internal.PlatformNotSupported;
         }
         #endregion
         

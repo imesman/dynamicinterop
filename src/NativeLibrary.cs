@@ -65,11 +65,11 @@ namespace DynamicInterop
         /// <exception cref="NotSupportedException">The current operating system isn't supported!</exception>
         public static NativeLibrary Create()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (Platform.OperatingSystem == OSPlatform.Windows)
                 return new WindowsLibrary();
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (Platform.OperatingSystem == OSPlatform.OSX)
                 return new OSXLibrary();
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else if (Platform.OperatingSystem == OSPlatform.Linux)
                 return new LinuxLibrary();
             else throw Internal.PlatformNotSupported;
         }
@@ -129,7 +129,7 @@ namespace DynamicInterop
                 }
                 
                 // Then, we attempt to resolve the path using Windows-specific special folders.
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (Platform.OperatingSystem == OSPlatform.Windows)
                 {
                     string windowspath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder
                         .Windows), path);
@@ -183,7 +183,7 @@ namespace DynamicInterop
                                     goto resolved;
                                 }
                                 
-                                string userdir = Internal.GetUserDirectory();
+                                string userdir = Platform.GetUserDirectory();
                                 if (userdir != string.Empty)
                                 {
                                     string rootnugetpath = Path.Combine(userdir, ".nuget", "packages", path);
@@ -249,7 +249,7 @@ namespace DynamicInterop
         /// <returns>Whether or not the path was added successfully.</returns>
         public NativeLibrary AddPath(string path, OSPlatform platform, bool shouldThrow = true)
         {
-            Architecture[] architectures = Internal.GetSupportedArchitectures();
+            Architecture[] architectures = Platform.GetSupportedArchitectures();
             bool success = false;
             for (int i = 0; i < architectures.Length; i++)
             {
@@ -341,7 +341,7 @@ namespace DynamicInterop
         public override NativeLibrary Load()
         {
             base.Load();
-            Pointer = Internal.Windows.LoadLibrary(ActivePath);
+            Pointer = Windows.LoadLibrary(ActivePath);
             if (Pointer == IntPtr.Zero)
                 throw new Win32Exception(Marshal.GetLastWin32Error(), Internal.LibraryNotLoaded.ToString());
             return this;
@@ -356,7 +356,7 @@ namespace DynamicInterop
         public override T GetFunction<T>(string name)
         {
             base.GetFunction<T>(name);
-            return Marshal.GetDelegateForFunctionPointer<T>(Internal.Windows.GetProcAddress(
+            return Marshal.GetDelegateForFunctionPointer<T>(Windows.GetProcAddress(
                 Pointer, name));
         }
 
@@ -366,7 +366,7 @@ namespace DynamicInterop
         public override void Free()
         {
             base.Free();
-            Internal.Windows.FreeLibrary(Pointer);
+            Windows.FreeLibrary(Pointer);
             Pointer = IntPtr.Zero;
         }
         #endregion
@@ -385,9 +385,9 @@ namespace DynamicInterop
         public override NativeLibrary Load()
         {
             base.Load();
-            Pointer = Internal.OSX.dlopen(ActivePath, 2);
+            Pointer = MacOSX.dlopen(ActivePath, 2);
             if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException(Internal.OSX.dlerror(), Internal.LibraryNotLoaded);
+                throw new NullReferenceException(MacOSX.dlerror(), Internal.LibraryNotLoaded);
             return this;
         }
         
@@ -400,7 +400,7 @@ namespace DynamicInterop
         public override T GetFunction<T>(string name)
         {
             base.GetFunction<T>(name);
-            return Marshal.GetDelegateForFunctionPointer<T>(Internal.OSX.dlsym(Pointer, name));
+            return Marshal.GetDelegateForFunctionPointer<T>(MacOSX.dlsym(Pointer, name));
         }
         
         /// <summary>
@@ -409,7 +409,7 @@ namespace DynamicInterop
         public override void Free()
         {
             base.Free();
-            Internal.OSX.dlclose(Pointer);
+            MacOSX.dlclose(Pointer);
             Pointer = IntPtr.Zero;
         }
         #endregion
@@ -428,9 +428,9 @@ namespace DynamicInterop
         public override NativeLibrary Load()
         {
             base.Load();
-            Pointer = Internal.Linux.dlopen(ActivePath, 2);
+            Pointer = Linux.dlopen(ActivePath, 2);
             if (Pointer == IntPtr.Zero)
-                throw new NullReferenceException(Internal.Linux.dlerror(), Internal.LibraryNotLoaded);
+                throw new NullReferenceException(Linux.dlerror(), Internal.LibraryNotLoaded);
             return this;
         }
 
@@ -443,7 +443,7 @@ namespace DynamicInterop
         public override T GetFunction<T>(string name)
         {
             base.GetFunction<T>(name);
-            return Marshal.GetDelegateForFunctionPointer<T>(Internal.Linux.dlsym(Pointer, name));
+            return Marshal.GetDelegateForFunctionPointer<T>(Linux.dlsym(Pointer, name));
         }
 
         /// <summary>
@@ -452,7 +452,7 @@ namespace DynamicInterop
         public override void Free()
         {
             base.Free();
-            Internal.Linux.dlclose(Pointer);
+            Linux.dlclose(Pointer);
             Pointer = IntPtr.Zero;
         }
         #endregion
