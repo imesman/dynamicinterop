@@ -82,6 +82,24 @@ namespace DynamicInterop
         }
 
         /// <summary>
+        /// Is the current operating system Windows?
+        /// </summary>
+        /// <returns>Whether the the current operating system is Windows.</returns>
+        public static bool IsWindows() => OperatingSystem == OSPlatform.Windows;
+        
+        /// <summary>
+        /// Is the current operating system OSX?
+        /// </summary>
+        /// <returns>Whether the the current operating system is OSX.</returns>
+        public static bool IsOSX() => OperatingSystem == OSPlatform.OSX;
+        
+        /// <summary>
+        /// Is the current operating system Linux?
+        /// </summary>
+        /// <returns>Whether the the current operating system is Linux.</returns>
+        public static bool IsLinux() => OperatingSystem == OSPlatform.Linux;
+        
+        /// <summary>
         /// Get the current runtime identifier.
         /// </summary>
         /// <returns>The current runtime identifier.</returns>
