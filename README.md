@@ -14,6 +14,10 @@ DynamicInterop supports .NET Standard 2.1 and .NET 7. All examples support .NET 
 * OSX
 * Linux
 
+### Dependencies
+* [Microsoft.Extensions.DependencyModel (7.0.0)](https://www.nuget.org/packages/Microsoft.Extensions.DependencyModel/7.0.0)
+* [Microsoft.Win32.Registry (5.0.0)](https://www.nuget.org/packages/Microsoft.Win32.Registry/5.0.0)
+
 ### License & Acknowledgements
 DynamicInterop is distributed under the very permissive [MIT/X11 license](LICENSE) and borrows source code from 
-[nativelibraryloader](https://github.com/mellinoe/nativelibraryloader).
+[nativelibraryloader](https://github.com/mellinoe/nativelibraryloader) and [Easy.Common](https://github.com/NimaAra/Easy.Common).

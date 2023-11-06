@@ -17,20 +17,19 @@ To load a library, you first have to instantiate an instance of the `NativeLibra
 > freeing the library pointer.
 
 Although the above approach will allow you to correctly interop with the unmanaged library, it is insufficient when you 
-need to pass different paths depending on the platform and architecture. This can be done using the `PathResolver` class, 
+need to pass different paths depending on the platform and architecture. This can be done using the `AddPath` method, 
 as demonstrated below:
 
 ```csharp
-    PathResolver resolver = new PathResolver();
-    resolver.Add("YOUR-LIBRARY", OSPlatform.Windows, Architecture.X86);
-    resolver.Add("YOUR-LIBRARY", OSPlatform.Windows, Architecture.X64);
+    library.AddPath("YOUR-LIBRARY", new Platform(OSPlatform.Windows, Architecture.X86));
+    library.AddPath("YOUR-LIBRARY", new Platform(OSPlatform.Windows, Architecture.X64));
 ```
 
-The `OSPlatform` and `Architecture` arguments can be changed to any platform or architecture that is supported by .NET.
+The `OSPlatform` and `Architecture` arguments can be changed to any operating system or architecture that is supported by .NET.
 The unmanaged library can then be loaded as such:
 
 ```csharp
-    library.Load(resolver.Get());
+    library.Load();
 ```
 
 ### Loading a function
